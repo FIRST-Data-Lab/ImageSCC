@@ -1,0 +1,3 @@
+load("/Users/gwang/Dropbox/FDA-RPackages/ImageSCC/data/Tr1.rda")
+dim(V1)
+dim(Tr1)
