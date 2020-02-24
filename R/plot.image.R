@@ -3,14 +3,15 @@
 #' The plot method for class 'image'. The function plots a series of images of triangulations used for mean estimation, estimated mean functions and simultaneous confidence corridors.
 #'
 #' @param mfit an "image" object returned from either \code{fit.image} or \code{scc.image}.
+#' @param ... arguments passed into function fields::image.plot
 #'
 #' @importFrom Triangulation TriPlot
-#' @importFrom graphics image
+#' @importFrom fields image.plot
 #'
 #' @details This R package is the implementation program for manuscript entitled "Simultaneous Confidence Corridors for Mean Functions in Functional Data Analysis of Imaging Data" by Yueying Wang, Guannan Wang, Li Wang and R. Todd Ogden.
 #'
 #' @export
-plot.image <- function(mfit){
+plot.image <- function(mfit, ...){
   # Plot 1. Triangulation
   TriPlot(mfit$V.est.a,mfit$Tr.est.a)
   readline(prompt="Press [enter] to continue")
@@ -29,7 +30,8 @@ plot.image <- function(mfit){
     mu.hat <- rep(NA,n1*n2)
     mu.hat[ind.inside] <- mfit$Yhat[ii,]
     mu.hat.mtx <- matrix(mu.hat,nrow=n2,ncol=n1)
-    image(z2,z1,mu.hat.mtx)
+    image.plot(z2,z1,mu.hat.mtx,...)
+    title("Estimated Mean Function")
     readline(prompt="Press [enter] to continue")
   }
 
@@ -43,12 +45,13 @@ plot.image <- function(mfit){
     for(ii in 1:nalpha){
       scc <- matrix(NA,n1*n2,2)
       scc[ind.inside.band,] <- mfit$scc[,,ii]
+      scc.limit <- c(min(scc[,1],na.rm=TRUE), max(scc[,2],na.rm=TRUE))
       scc.l.mtx <- matrix(scc[,1],nrow=n2,ncol=n1)
-      image(z2,z1,scc.l.mtx)
+      image.plot(z2,z1,scc.l.mtx, zlim = scc.limit,...)
       title(paste("Lower SCC when alpha =",mfit$alpha[ii]))
       readline(prompt="Press [enter] to continue")
       scc.u.mtx <- matrix(scc[,2],nrow=n2,ncol=n1)
-      image(z2,z1,scc.u.mtx)
+      image.plot(z2,z1,scc.u.mtx, zlim = scc.limit,...)
       title(paste("Upper SCC when alpha =",mfit$alpha[ii]))
       readline(prompt="Press [enter] to continue")
     }
